@@ -1,6 +1,9 @@
 use master
+go
 create database UniversidadDB
-use UniversidadDB
+go
+use [UniversidadDB]
+go
 CREATE TABLE [AVANCE]
 ( 
 	[ID_AVANCE]          varchar(18) primary key NOT NULL ,
