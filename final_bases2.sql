@@ -179,17 +179,24 @@ ALTER TABLE [UNIVERSIDAD_PROFESOR]
 		ON UPDATE NO ACTION
 go
 
+---INDICES------------------
+
 --índices para estudiantes alfabéticamente
 select * from ESTUDIANTE;
-select nombre from ESTUDIANTE
+select nombre from ESTUDIANTE 
 create nonclustered index idx_NOMBRE_ESTUDIANTE
 ON estudiante(NOMBRE)
+--execute sp_helpindex estudiante
 --indice para comentarios por fecha
-create nonclustered index idx_FECHA_COMENTARIO
-ON COMENTARIOS(FECHA_CREACION)
+create nonclustered index idx_FECHA_CONTENIDO_COMENTARIO
+ON COMENTARIOS(FECHA_CREACION,CONTENIDO)
 SELECT * FROM COMENTARIOS;
-SELECT FECHA_CREACION FROM COMENTARIOS;
-
+SELECT CONTENIDO, FECHA_CREACION FROM COMENTARIOS WHERE ID_AVANCE='A004';
+SELECT (FECHA_CREACION),contenido FROM COMENTARIOS;
+--indice de universidades según su calificación
+create nonclustered index idx_Categoria_NOMBRE_UNIVESIDADES
+ON UNIVERSIDAD(CATEGORIA,NOMBRE_UNIVERSIDAD)
+SELECT NOMBRE_UNIVERSIDAD,CATEGORIA FROM Universidad;
 
 ----INSERTS--------------
 
@@ -317,7 +324,7 @@ INSERT INTO COMENTARIOS VALUES ('C001', 'Faltan objetivos especificos', '10/10/2
 INSERT INTO COMENTARIOS VALUES ('C002', 'Faltan conclusiones', '12/12/2018', 'A002' );
 INSERT INTO COMENTARIOS VALUES ('C003', 'Faltan anexos', '11/11/2018', 'A003' );
 INSERT INTO COMENTARIOS VALUES ('C004', 'Faltan normas APA', '10/12/2018', 'A004' );
-INSERT INTO COMENTARIOS VALUES ('C005', 'Tiene muchas faltas ortograficas', '10/12/2018', 'A005' );
+INSERT INTO COMENTARIOS VALUES ('C006', 'Tiene muchas faltas ortograficas', '10/20/2018', 'A004' );
 commit tran
 end try
 begin catch
@@ -340,5 +347,5 @@ print('Error al insertar estudiantes')
 rollback tran
 end catch
 
---select * from ESTUDIANTE;
+--select NOMBRE from ESTUDIANTE;
 
