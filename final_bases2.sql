@@ -1,0 +1,187 @@
+use master
+create database UniversidadDB
+use UniversidadDB
+CREATE TABLE [AVANCE]
+( 
+	[ID_AVANCE]          varchar(18) primary key NOT NULL ,
+	[DOCUMENTOS]         varchar(100)  NULL ,
+	[FECHA]              datetime  NULL ,
+	[ID_TRABAJO]         varchar(18)  NULL 
+)
+go
+
+CREATE TABLE [CARRERA]
+( 
+	[ID_CARRERA]         varchar(18) primary key  NOT NULL ,
+	[NOMBRE]             varchar(25)  NULL ,
+	[DESCRIPCION]        varchar(100)  NULL ,
+	[NUM_SEMESTRES]      int  NULL ,
+	[ID_FACULTAD]        varchar(18)  NOT NULL 
+)
+go
+
+
+CREATE TABLE [COMENTARIOS]
+( 
+	[ID_COMENTARIOS]     varchar(18) primary key NOT NULL ,
+	[CONTENIDO]          varchar(100)  NULL ,
+	[FECHA_CREACION]     datetime  NULL ,
+	[ID_AVANCE]          varchar(18)  NULL 
+)
+go
+
+CREATE TABLE [DIRECTOR]
+( 
+	[ID_DIRECTOR]        varchar(18) primary key NOT NULL ,
+	[NOMBRE]             varchar(50)  NULL ,
+	[CORREO]             varchar(25)  NULL ,
+	[TELEFONO]           int  NULL ,
+	[CEDULA]             int  NULL ,
+	[TITULO]             varchar(50)  NULL ,
+	[ID_CARRERA]         varchar(18)  NOT NULL 
+)
+go
+
+CREATE TABLE [ESTUDIANTE]
+( 
+	[ID_ESTUDIANTE]      varchar(18) primary key NOT NULL ,
+	[NOMBRE]             varchar(50)  NULL ,
+	[CEDULA]             int  NULL ,
+	[CORREO]             varchar(50)  NULL ,
+	[TELEF]              int  NULL ,
+	[DIRECCION]          varchar(50)  NULL ,
+	[ID_CARRERA]         varchar(18)  NOT NULL ,
+	[ID_TRABAJO]         varchar(18)  NULL 
+)
+go
+
+CREATE TABLE [FACULTAD]
+( 
+	[ID_FACULTAD]        varchar(18) primary key NOT NULL ,
+	[NOMBRE]             varchar(50)  NULL ,
+	[UBICACION]          varchar(50)  NULL ,
+	[ID_UNIVERSIDAD]     varchar(18)  NOT NULL 
+)
+go
+
+CREATE TABLE [PROFESOR]
+( 
+	[ID_PROFESOR]        varchar(18) primary key NOT NULL ,
+	[NOMBRE]             varchar(50)  NULL ,
+	[CORREO]             varchar(50)  NULL ,
+	[NUM_TELF]           int  NULL 
+)
+go
+
+CREATE TABLE [TRABAJO_TITULACION]
+( 
+	[ID_TRABAJO]         varchar(18) primary key NOT NULL ,
+	[DESCRIPCION]        varchar(100)  NULL ,
+	[TEMA]               varchar(50)  NULL ,
+	[ESTADO]             varchar(25)  NULL ,
+	[ID_PROFESOR]        varchar(18)  NULL 
+)
+go
+
+CREATE TABLE [Universidad]
+( 
+	[ID_UNIVERSIDAD]     varchar(18) primary key NOT NULL ,
+	[NOMBRE_UNIVERSIDAD] varchar(50)  NULL ,
+	[NUMERO_ESTUDIANTES] int  NULL ,
+	[CATEGORIA]          varchar(18)  NULL ,
+	[NUM_CAMPUS]         int  NULL 
+)
+go
+
+CREATE TABLE [UNIVERSIDAD_PROFESOR]
+( 
+	[DESCRIPCION]        varchar(50)  NULL ,
+	[ID_UNIVERSIDAD]     varchar(18)  NOT NULL ,
+	[ID_PROFESOR]        varchar(18)  NOT NULL 
+)
+go
+
+ALTER TABLE [UNIVERSIDAD_PROFESOR]
+	ADD CONSTRAINT [XPKUNIVERSIDAD_PROFESOR] PRIMARY KEY  CLUSTERED ([ID_UNIVERSIDAD] ASC,[ID_PROFESOR] ASC)
+go
+
+
+ALTER TABLE [AVANCE]
+	ADD CONSTRAINT [R_12] FOREIGN KEY ([ID_TRABAJO]) REFERENCES [TRABAJO_TITULACION]([ID_TRABAJO])
+		ON DELETE NO ACTION
+		ON UPDATE NO ACTION
+go
+
+
+ALTER TABLE [CARRERA]
+	ADD CONSTRAINT [R_2] FOREIGN KEY ([ID_FACULTAD]) REFERENCES [FACULTAD]([ID_FACULTAD])
+		ON DELETE NO ACTION
+		ON UPDATE NO ACTION
+go
+
+
+ALTER TABLE [COMENTARIOS]
+	ADD CONSTRAINT [R_13] FOREIGN KEY ([ID_AVANCE]) REFERENCES [AVANCE]([ID_AVANCE])
+		ON DELETE NO ACTION
+		ON UPDATE NO ACTION
+go
+
+
+ALTER TABLE [DIRECTOR]
+	ADD CONSTRAINT [R_3] FOREIGN KEY ([ID_CARRERA]) REFERENCES [CARRERA]([ID_CARRERA])
+		ON DELETE NO ACTION
+		ON UPDATE NO ACTION
+go
+
+
+ALTER TABLE [ESTUDIANTE]
+	ADD CONSTRAINT [R_4] FOREIGN KEY ([ID_CARRERA]) REFERENCES [CARRERA]([ID_CARRERA])
+		ON DELETE NO ACTION
+		ON UPDATE NO ACTION
+go
+
+ALTER TABLE [ESTUDIANTE]
+	ADD CONSTRAINT [R_10] FOREIGN KEY ([ID_TRABAJO]) REFERENCES [TRABAJO_TITULACION]([ID_TRABAJO])
+		ON DELETE NO ACTION
+		ON UPDATE NO ACTION
+go
+
+
+ALTER TABLE [FACULTAD]
+	ADD CONSTRAINT [R_1] FOREIGN KEY ([ID_UNIVERSIDAD]) REFERENCES [Universidad]([ID_UNIVERSIDAD])
+		ON DELETE NO ACTION
+		ON UPDATE NO ACTION
+go
+
+
+ALTER TABLE [TRABAJO_TITULACION]
+	ADD CONSTRAINT [R_11] FOREIGN KEY ([ID_PROFESOR]) REFERENCES [PROFESOR]([ID_PROFESOR])
+		ON DELETE NO ACTION
+		ON UPDATE NO ACTION
+go
+
+
+ALTER TABLE [UNIVERSIDAD_PROFESOR]
+	ADD CONSTRAINT [R_7] FOREIGN KEY ([ID_UNIVERSIDAD]) REFERENCES [Universidad]([ID_UNIVERSIDAD])
+		ON DELETE NO ACTION
+		ON UPDATE NO ACTION
+go
+
+ALTER TABLE [UNIVERSIDAD_PROFESOR]
+	ADD CONSTRAINT [R_9] FOREIGN KEY ([ID_PROFESOR]) REFERENCES [PROFESOR]([ID_PROFESOR])
+		ON DELETE NO ACTION
+		ON UPDATE NO ACTION
+go
+
+--índices para estudiantes alfabéticamente
+select * from ESTUDIANTE;
+select nombre from ESTUDIANTE
+create nonclustered index idx_NOMBRE_ESTUDIANTE
+ON estudiante(NOMBRE)
+--indice para comentarios por fecha
+create nonclustered index idx_FECHA_COMENTARIO
+ON COMENTARIOS(FECHA_CREACION)
+SELECT * FROM COMENTARIOS;
+SELECT FECHA_CREACION FROM COMENTARIOS;
+
+--
